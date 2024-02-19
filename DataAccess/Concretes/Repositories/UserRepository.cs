@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concretes.Repositories;
 
-public class UserRepository : EfRepositoryBase<User, int, BaseDbContext>, IUserRepository
+public class UserRepository : EfRepositoryBase<User, int, BaseDbContext>
 {
     public UserRepository(BaseDbContext context) : base(context)
     {

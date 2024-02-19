@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Abstracts;
 
-public interface IEmployeeRepository:IAsyncRepository<Employee,int>
+public interface IEmployeeRepository:IAsyncRepository<Employee,int>, IRepository<Employee, int>
 {
 }
