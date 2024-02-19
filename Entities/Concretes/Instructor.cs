@@ -9,6 +9,7 @@ namespace Entities.Concretes;
 
 public class Instructor:User
 {
+    public int Id { get; set; }
     public int UserId { get; set; }
     public string CompanyName { get; set; }
 
@@ -17,19 +18,10 @@ public class Instructor:User
         
     }
 
-    public Instructor(int userId, string companyName, string userName, string firstName, string lastName, DateTime dateOfBirth, string nationalIdentity, string eMail, string password)
+    public Instructor(int id, string companyName)
     {
-        UserId = userId;
+        Id = id;
         CompanyName = companyName;
-        UserName = userName;
-        FirstName = firstName;
-        LastName = lastName;
-        DateOfBirth = dateOfBirth;
-        NationalIdentity = nationalIdentity;
-        Email = eMail;
-        Password = password;
-
-        
 
     }
 }

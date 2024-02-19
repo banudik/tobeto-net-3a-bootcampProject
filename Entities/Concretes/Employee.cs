@@ -8,6 +8,7 @@ namespace Entities.Concretes;
 
 public class Employee:User
 {
+    public int Id { get; set; }
     public int UserId { get; set; }
     public string Position { get; set; }
 
@@ -16,17 +17,11 @@ public class Employee:User
         
     }
 
-    public Employee(int userId, string position, string userName, string firstName, string lastName, DateTime dateOfBirth, string nationalIdentity, string eMail, string password)
+    public Employee(int id, string position)
     {
-        UserId = userId;
+        Id = id;
         Position = position;
-        UserName = userName;
-        FirstName = firstName;
-        LastName = lastName;
-        DateOfBirth = dateOfBirth;
-        NationalIdentity = nationalIdentity;
-        Email = eMail;
-        Password = password;
+
         
     }
 }

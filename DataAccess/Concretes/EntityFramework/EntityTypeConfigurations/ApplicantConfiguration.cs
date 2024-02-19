@@ -13,6 +13,11 @@ public class ApplicantConfiguration :IEntityTypeConfiguration<Applicant>
 {
     public void Configure(EntityTypeBuilder<Applicant> builder)
     {
+        builder.ToTable("Applicants").HasKey(x => x.Id);
+        builder.Property(x => x.UserId).HasColumnName("User-Id");
         builder.Property(x => x.About).HasColumnName("About");
+        builder.Property(x => x.CreatedDate).HasColumnName("CreatedDate");
+        builder.Property(x => x.UpdatedDate).HasColumnName("UpdatedDate");
+        builder.Property(x => x.DeletedDate).HasColumnName("DeletedDate");
     }
 }
