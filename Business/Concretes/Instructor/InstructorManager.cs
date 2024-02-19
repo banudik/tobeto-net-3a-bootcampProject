@@ -1,15 +1,8 @@
 ﻿using Business.Abstracts.Instructor;
 using Business.Requests.Instructor;
-using Business.Responses.Applicant;
 using Business.Responses.Instructor;
 using DataAccess.Abstracts;
-using DataAccess.Concretes.Repositories;
 using Entities.Concretes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concretes;
 
@@ -26,7 +19,7 @@ public class InstructorManager : IInstructorService
     {
         Instructor instructorToCreate = new Instructor();
         instructorToCreate.CompanyName = request.CompanyName;
-        await _instructorRepository.Add(instructorToCreate);
+        await _instructorRepository.AddAsync(instructorToCreate);
 
         CreatedInstructorResponse response = new CreatedInstructorResponse();
         response.CompanyName = instructorToCreate.CompanyName;
@@ -37,7 +30,7 @@ public class InstructorManager : IInstructorService
     {
         Instructor instructorToDelete = new Instructor();
         instructorToDelete.Id = request.Id;
-        await _instructorRepository.Delete(instructorToDelete);
+        await _instructorRepository.DeleteAsync(instructorToDelete);
 
         DeletedInstructorResponse response = new DeletedInstructorResponse();
         response.Id = instructorToDelete.Id;
@@ -47,7 +40,7 @@ public class InstructorManager : IInstructorService
     public async Task<List<GetAllInstructorResponse>> GetAllAsync()
     {
         List<GetAllInstructorResponse> instructors = new List<GetAllInstructorResponse>();
-        foreach (var instructor in await _instructorRepository.GetAll())
+        foreach (var instructor in await _instructorRepository.GetAllAsync())
         {
             GetAllInstructorResponse response = new GetAllInstructorResponse();
             response.Id = instructor.Id;
@@ -60,7 +53,7 @@ public class InstructorManager : IInstructorService
     public async Task<GetByIdInstructorResponse> GetByIdAsync(int id)
     {
         GetByIdInstructorResponse response = new GetByIdInstructorResponse();
-        Instructor instructor = await _instructorRepository.Get(x => x.Id == id);
+        Instructor instructor = await _instructorRepository.GetAsync(x => x.Id == id);
         response.Id = instructor.Id;
         response.CompanyName = instructor.CompanyName;
         return response;
@@ -68,10 +61,10 @@ public class InstructorManager : IInstructorService
 
     public async Task<UpdatedInstructorResponse> UpdateAsync(UpdateInstructorRequest request)
     {
-        Instructor instructorToUpdate = await _instructorRepository.Get(x => x.Id == request.Id);
+        Instructor instructorToUpdate = await _instructorRepository.GetAsync(x => x.Id == request.Id);
         instructorToUpdate.Id = request.Id;
         instructorToUpdate.CompanyName = request.CompanyName;
-        await _instructorRepository.Update(instructorToUpdate);
+        await _instructorRepository.UpdateAsync(instructorToUpdate);
 
         UpdatedInstructorResponse response = new UpdatedInstructorResponse();
         response.Id = instructorToUpdate.Id;

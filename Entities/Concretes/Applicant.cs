@@ -8,8 +8,6 @@ namespace Entities.Concretes;
 
 public class Applicant:User
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
     public string About { get; set; }
 
     public Applicant()
@@ -17,9 +15,8 @@ public class Applicant:User
 
     }
 
-    public Applicant(int id, string about)
+    public Applicant(string about)
     {
-        Id = id;
         About = about;
 
     }

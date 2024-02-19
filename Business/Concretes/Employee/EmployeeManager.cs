@@ -19,7 +19,7 @@ public class EmployeeManager : IEmployeeService
     {
         Employee employeeToCreate = new Employee();
         employeeToCreate.Position = request.Position;
-        await _employeeRepository.Add(employeeToCreate);
+        await _employeeRepository.AddAsync(employeeToCreate);
 
         CreatedEmployeeResponse response = new CreatedEmployeeResponse();
         response.Position = request.Position;
@@ -30,7 +30,7 @@ public class EmployeeManager : IEmployeeService
     {
         Employee employeeToDelete = new Employee();
         employeeToDelete.Id = request.Id;
-        await _employeeRepository.Delete(employeeToDelete);
+        await _employeeRepository.DeleteAsync(employeeToDelete);
 
         DeletedEmployeeResponse response = new DeletedEmployeeResponse();
         response.Id = employeeToDelete.Id;
@@ -40,7 +40,7 @@ public class EmployeeManager : IEmployeeService
     public async Task<List<GetAllEmployeeResponse>> GetAllAsync()
     {
         List<GetAllEmployeeResponse> employees = new List<GetAllEmployeeResponse>();
-        foreach (var employee in await _employeeRepository.GetAll())
+        foreach (var employee in await _employeeRepository.GetAllAsync())
         {
             GetAllEmployeeResponse response = new GetAllEmployeeResponse();
             response.Id = employee.Id;
@@ -53,7 +53,7 @@ public class EmployeeManager : IEmployeeService
     public async Task<GetByIdEmployeeResponse> GetByIdAsync(int id)
     {
         GetByIdEmployeeResponse response = new GetByIdEmployeeResponse();
-        Employee employee = await _employeeRepository.Get(x=> x.Id == id);
+        Employee employee = await _employeeRepository.GetAsync(x=> x.Id == id);
         response.Id = employee.Id;
         response.Position = employee.Position;
         return response;
@@ -61,10 +61,10 @@ public class EmployeeManager : IEmployeeService
 
     public async Task<UpdatedEmployeeResponse> UpdateAsync(UpdateEmployeeRequest request)
     {
-        Employee employeeToUpdate = await _employeeRepository.Get(x => x.Id == request.Id);
+        Employee employeeToUpdate = await _employeeRepository.GetAsync(x => x.Id == request.Id);
         employeeToUpdate.Id = request.Id;
         employeeToUpdate.Position = request.Position;
-        await _employeeRepository.Update(employeeToUpdate);
+        await _employeeRepository.UpdateAsync(employeeToUpdate);
 
         UpdatedEmployeeResponse response = new UpdatedEmployeeResponse();
         response.Id = employeeToUpdate.Id;

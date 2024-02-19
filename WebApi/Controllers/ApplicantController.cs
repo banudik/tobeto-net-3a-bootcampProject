@@ -41,8 +41,8 @@ public class ApplicantController : ControllerBase
         return Ok(await _applicantService.GetAllAsync());
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetByIdAsync(int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetByIdAsync([FromRoute]int id)
     {
         return Ok(await _applicantService.GetByIdAsync(id));
     }

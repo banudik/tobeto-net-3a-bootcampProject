@@ -44,8 +44,8 @@ public class InstructorController : ControllerBase
         return Ok(await _instructorService.GetAllAsync());
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetByIdAsync(int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetByIdAsync([FromRoute]int id)
     {
         return Ok(await _instructorService.GetByIdAsync(id));
     }

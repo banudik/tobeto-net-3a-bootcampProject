@@ -19,7 +19,7 @@ public class ApplicantManager : IApplicantService
     {
         Applicant applicantToCreate = new Applicant();
         applicantToCreate.About = request.About;
-        await _applicantRepository.Add(applicantToCreate);
+        await _applicantRepository.AddAsync(applicantToCreate);
 
         CreatedApplicantResponse response = new CreatedApplicantResponse();
         response.About = applicantToCreate.About;
@@ -30,7 +30,7 @@ public class ApplicantManager : IApplicantService
     {
         Applicant applicantToDelete = new Applicant();
         applicantToDelete.Id = request.Id;
-        await _applicantRepository.Delete(applicantToDelete);
+        await _applicantRepository.DeleteAsync(applicantToDelete);
 
         DeletedApplicantResponse response = new DeletedApplicantResponse();
         response.Id = applicantToDelete.Id;
@@ -41,7 +41,7 @@ public class ApplicantManager : IApplicantService
     public async Task<List<GetAllApplicantResponse>> GetAllAsync()
     {
         List<GetAllApplicantResponse> applicants = new List<GetAllApplicantResponse>();
-        foreach (var applicant in await _applicantRepository.GetAll())
+        foreach (var applicant in await _applicantRepository.GetAllAsync())
         {
             GetAllApplicantResponse response = new GetAllApplicantResponse();
             response.Id = applicant.Id;
@@ -55,7 +55,7 @@ public class ApplicantManager : IApplicantService
     public async Task<GetByIdApplicantResponse> GetByIdAsync(int id)
     {
         GetByIdApplicantResponse response = new GetByIdApplicantResponse();
-        Applicant applicant = await _applicantRepository.Get(x => x.Id == id);
+        Applicant applicant = await _applicantRepository.GetAsync(x => x.Id == id);
         response.Id = applicant.Id;
         response.About = applicant.About;
         return response;
@@ -63,10 +63,10 @@ public class ApplicantManager : IApplicantService
 
     public async Task<UpdatedApplicantResponse> UpdateAsync(UpdateApplicantRequest request)
     {
-        Applicant applicantToUpdate = await _applicantRepository.Get(x => x.Id == request.Id);
+        Applicant applicantToUpdate = await _applicantRepository.GetAsync(x => x.Id == request.Id);
         applicantToUpdate.Id = request.Id;
         applicantToUpdate.About = request.About;
-        await _applicantRepository.Update(applicantToUpdate);
+        await _applicantRepository.UpdateAsync(applicantToUpdate);
 
         UpdatedApplicantResponse response = new UpdatedApplicantResponse();
         response.Id = applicantToUpdate.Id;

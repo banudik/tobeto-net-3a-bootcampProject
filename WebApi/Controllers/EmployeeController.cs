@@ -44,8 +44,8 @@ public class EmployeeController : ControllerBase
         return Ok(await _employeeService.GetAllAsync());
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetByIdAsync(int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetByIdAsync([FromRoute]int id)
     {
         return Ok(await _employeeService.GetByIdAsync(id));
     }

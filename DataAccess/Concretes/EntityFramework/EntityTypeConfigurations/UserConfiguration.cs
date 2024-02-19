@@ -14,7 +14,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("Users").HasKey(x=> x.Id);
-        builder.Property(x=> x.Id).HasColumnName("UserId");
+        builder.Property(x=> x.Id).HasColumnName("Id");
         builder.Property(x=>x.UserName).HasColumnName("UserName");
         builder.Property(x => x.FirstName).HasColumnName("FirstName");
         builder.Property(x => x.LastName).HasColumnName("LastName");

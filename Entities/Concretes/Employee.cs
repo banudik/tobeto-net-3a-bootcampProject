@@ -8,8 +8,6 @@ namespace Entities.Concretes;
 
 public class Employee:User
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
     public string Position { get; set; }
 
     public Employee()
@@ -17,9 +15,8 @@ public class Employee:User
         
     }
 
-    public Employee(int id, string position)
+    public Employee(string position)
     {
-        Id = id;
         Position = position;
 
         

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Core.DataAccess.EntityFramework;
 
-public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<TEntity, TEntityId>
+public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<TEntity, TEntityId>, IRepository<TEntity, TEntityId>
     where TEntity : BaseEntity<TEntityId>
     where TContext : DbContext
 {
@@ -22,7 +22,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
 
     public IQueryable<TEntity> Query() => Context.Set<TEntity>();
 
-    public async Task<TEntity> Add(TEntity entity)
+    public async Task<TEntity> AddAsync(TEntity entity)
     {
         entity.CreatedDate = DateTime.UtcNow;
         await Context.AddAsync(entity);
@@ -30,7 +30,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         return entity;
     }
 
-    public async Task<TEntity> Delete(TEntity entity)
+    public async Task<TEntity> DeleteAsync(TEntity entity)
     {
         entity.CreatedDate = DateTime.UtcNow;
         Context.Remove(entity);
@@ -38,7 +38,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         return entity;
     }
 
-    public async Task<TEntity> Get(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null)
+    public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null)
     {
         IQueryable<TEntity> queryable = Query();
         if (include != null)
@@ -49,7 +49,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
     }
 
 
-    public async Task<List<TEntity>> GetAll(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null)
+    public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null)
     {
         IQueryable<TEntity> queryable = Query();
         if (include != null)
@@ -64,12 +64,57 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
     }
 
 
-    public async Task<TEntity> Update(TEntity entity)
+    public async Task<TEntity> UpdateAsync(TEntity entity)
     {
         Context.Update(entity);
         await Context.SaveChangesAsync();
         return entity;
     }
 
+    List<TEntity> IRepository<TEntity, TEntityId>.GetAll(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include)
+    {
+        IQueryable<TEntity> queryable = Query();
+        if (include != null)
+        {
+            queryable = include(queryable);
+        }
+        if (predicate != null)
+        {
+            queryable = queryable.Where(predicate);
+        }
+        return queryable.ToList();
+    }
 
+    TEntity IRepository<TEntity, TEntityId>.Get(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include)
+    {
+        IQueryable<TEntity> queryable = Query();
+        if (include != null)
+
+            queryable = include(queryable);
+
+        return queryable.FirstOrDefault(predicate);
+    }
+
+    TEntity IRepository<TEntity, TEntityId>.Add(TEntity entity)
+    {
+        entity.CreatedDate = DateTime.UtcNow;
+        Context.Add(entity);
+        Context.SaveChanges();
+        return entity;
+    }
+
+    TEntity IRepository<TEntity, TEntityId>.Update(TEntity entity)
+    {
+        Context.Update(entity);
+        Context.SaveChanges();
+        return entity;
+    }
+
+    TEntity IRepository<TEntity, TEntityId>.Delete(TEntity entity)
+    {
+        entity.CreatedDate = DateTime.UtcNow;
+        Context.Remove(entity);
+        Context.SaveChanges();
+        return entity;
+    }
 }

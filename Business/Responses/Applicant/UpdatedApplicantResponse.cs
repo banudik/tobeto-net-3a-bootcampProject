@@ -9,7 +9,6 @@ namespace Business.Responses.Applicant;
 public class UpdatedApplicantResponse
 {
     public int Id { get; set; }
-    public int UserId { get; set; }
     public string About { get; set; }
 
 }

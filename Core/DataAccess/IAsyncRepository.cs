@@ -12,11 +12,11 @@ namespace Core.DataAccess;
 public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
     where TEntity : BaseEntity<TEntityId>
 {
-    Task<List<TEntity>> GetAll(Expression<Func<TEntity, bool>> predicate = null,
+    Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null,
     Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null);
-    Task<TEntity> Get(Expression<Func<TEntity, bool>> predicate,
+    Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null);
-    Task<TEntity> Add(TEntity entity);
-    Task<TEntity> Update(TEntity entity);
-    Task<TEntity> Delete(TEntity entity);
+    Task<TEntity> AddAsync(TEntity entity);
+    Task<TEntity> UpdateAsync(TEntity entity);
+    Task<TEntity> DeleteAsync(TEntity entity);
 }

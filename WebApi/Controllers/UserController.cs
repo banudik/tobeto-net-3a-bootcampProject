@@ -44,8 +44,8 @@ public class UserController : ControllerBase
         return Ok(await _userService.GetAllAsync());
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetByIdAsync(int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
     {
         return Ok(await _userService.GetByIdAsync(id));
     }
