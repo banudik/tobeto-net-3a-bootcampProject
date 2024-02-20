@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(BaseDbContext))]
-    [Migration("20240219130056_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240220200046_mig2")]
+    partial class mig2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,7 +63,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("NationalIdentity")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("NationalIdentity");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -77,15 +78,11 @@ namespace DataAccess.Migrations
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("NationalIdentity");
+                        .HasColumnName("UserName");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", null, t =>
-                        {
-                            t.Property("NationalIdentity")
-                                .HasColumnName("NationalIdentity1");
-                        });
+                    b.ToTable("Users", (string)null);
 
                     b.UseTptMappingStrategy();
                 });

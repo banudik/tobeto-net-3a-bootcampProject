@@ -60,7 +60,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("NationalIdentity")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("NationalIdentity");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -74,15 +75,11 @@ namespace DataAccess.Migrations
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("NationalIdentity");
+                        .HasColumnName("UserName");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", null, t =>
-                        {
-                            t.Property("NationalIdentity")
-                                .HasColumnName("NationalIdentity1");
-                        });
+                    b.ToTable("Users", (string)null);
 
                     b.UseTptMappingStrategy();
                 });

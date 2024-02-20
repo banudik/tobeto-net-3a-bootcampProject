@@ -19,7 +19,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.FirstName).HasColumnName("FirstName");
         builder.Property(x => x.LastName).HasColumnName("LastName");
         builder.Property(x => x.DateOfBirth).HasColumnName("DateOfBirth");
-        builder.Property(x => x.UserName).HasColumnName("NationalIdentity");
+        builder.Property(x => x.NationalIdentity).HasColumnName("NationalIdentity");
         builder.Property(x => x.Email).HasColumnName("Email");
         builder.Property(x => x.Password).HasColumnName("Password");
         builder.Property(x => x.CreatedDate).HasColumnName("CreatedDate");
