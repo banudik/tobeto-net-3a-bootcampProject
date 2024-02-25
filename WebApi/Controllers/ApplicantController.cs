@@ -8,7 +8,7 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ApplicantController : ControllerBase
+public class ApplicantController : BaseController
 {
     private readonly IApplicantService _applicantService;
 
@@ -17,33 +17,33 @@ public class ApplicantController : ControllerBase
         _applicantService = applicantService;
     }
 
-    [HttpPost]
-    public async Task<CreatedApplicantResponse> AddAsync(CreateApplicantRequest request)
+    [HttpPost("AddAsync")]
+    public async Task<IActionResult> AddAsync(CreateApplicantRequest request)
     {
-        return await _applicantService.AddAsync(request);
+        return Ok (await _applicantService.AddAsync(request));
     }
 
-    [HttpDelete]
-    public async Task<DeletedApplicantResponse> DeletedAsync(DeleteApplicantRequest request)
-    {
-        return await _applicantService.DeleteAsync(request);
-    }
-
-    [HttpPut]
-    public async Task<UpdatedApplicantResponse> UpdateAsync(UpdateApplicantRequest request)
-    {
-        return await _applicantService.UpdateAsync(request);
-    }
-
-    [HttpGet]
+    [HttpGet("GetAllAsync")]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _applicantService.GetAllAsync());
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute]int id)
+    [HttpGet("GetByIdAsync")]
+    public async Task<IActionResult> GetByIdAsync(int id)
     {
         return Ok(await _applicantService.GetByIdAsync(id));
+    }
+
+    [HttpDelete("DeleteAsync")]
+    public async Task<IActionResult> DeletedAsync(DeleteApplicantRequest request)
+    {
+        return Ok(await _applicantService.DeleteAsync(request));
+    }
+
+    [HttpPut("UpdateAsync")]
+    public async Task<IActionResult> UpdateAsync(UpdateApplicantRequest request)
+    {
+        return Ok(await _applicantService.UpdateAsync(request));
     }
 }

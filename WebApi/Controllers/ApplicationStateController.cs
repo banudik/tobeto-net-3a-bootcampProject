@@ -9,7 +9,7 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ApplicationStateController : ControllerBase
+public class ApplicationStateController : BaseController
 {
     private readonly IApplicationStateService _applicationStateService;
 

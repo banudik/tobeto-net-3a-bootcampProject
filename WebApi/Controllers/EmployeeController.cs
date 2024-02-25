@@ -11,7 +11,7 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class EmployeeController : ControllerBase
+public class EmployeeController : BaseController
 {
     private readonly IEmployeeService _employeeService;
 
@@ -20,33 +20,33 @@ public class EmployeeController : ControllerBase
         _employeeService = employeeService;
     }
 
-    [HttpPost]
-    public async Task<CreatedEmployeeResponse> AddAsync(CreateEmployeeRequest request)
+    [HttpPost("AddAsync")]
+    public async Task<IActionResult> AddAsync(CreateEmployeeRequest request)
     {
-        return await _employeeService.AddAsync(request);
+        return Ok (await _employeeService.AddAsync(request));
     }
 
-    [HttpDelete]
-    public async Task<DeletedEmployeeResponse> DeletedAsync(DeleteEmployeeRequest request)
-    {
-        return await _employeeService.DeleteAsync(request);
-    }
-
-    [HttpPut]
-    public async Task<UpdatedEmployeeResponse> UpdateAsync(UpdateEmployeeRequest request)
-    {
-        return await _employeeService.UpdateAsync(request);
-    }
-
-    [HttpGet]
+    [HttpGet("GetAllAsync")]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _employeeService.GetAllAsync());
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute]int id)
+    [HttpGet("GetByIdAsync")]
+    public async Task<IActionResult> GetByIdAsync(int id)
     {
         return Ok(await _employeeService.GetByIdAsync(id));
+    }
+
+    [HttpDelete("DeleteAsync")]
+    public async Task<IActionResult> DeletedAsync(DeleteEmployeeRequest request)
+    {
+        return Ok(await _employeeService.DeleteAsync(request));
+    }
+
+    [HttpPut("UpdateAsync")]
+    public async Task<IActionResult> UpdateAsync(UpdateEmployeeRequest request)
+    {
+        return Ok(await _employeeService.UpdateAsync(request));
     }
 }

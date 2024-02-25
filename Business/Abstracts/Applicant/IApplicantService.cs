@@ -1,15 +1,15 @@
 ﻿using Business.Requests.Applicant;
 using Business.Responses.Applicant;
-using Entities.Concretes;
+using Core.Utilities.Results;
 
 namespace Business.Abstracts;
 
 public interface IApplicantService
 {
-    Task<CreatedApplicantResponse> AddAsync(CreateApplicantRequest request);
-    Task<UpdatedApplicantResponse> UpdateAsync(UpdateApplicantRequest request);
-    Task<DeletedApplicantResponse> DeleteAsync(DeleteApplicantRequest request);
-    Task<List<GetAllApplicantResponse>> GetAllAsync();
-    Task<GetByIdApplicantResponse> GetByIdAsync(int id);
+    Task<IDataResult<CreatedApplicantResponse>> AddAsync(CreateApplicantRequest request);
+    Task<IDataResult<UpdatedApplicantResponse>> UpdateAsync(UpdateApplicantRequest request);
+    Task<IDataResult<DeletedApplicantResponse>> DeleteAsync(DeleteApplicantRequest request);
+    Task<IDataResult<List<GetAllApplicantResponse>>> GetAllAsync();
+    Task<IDataResult<GetByIdApplicantResponse>> GetByIdAsync(int id);
    
 }

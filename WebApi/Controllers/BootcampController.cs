@@ -9,7 +9,7 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BootcampController : ControllerBase
+public class BootcampController : BaseController
 {
     private readonly IBootcampService _bootcampService;
 

@@ -5,13 +5,6 @@ using Business.Responses.Applications;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concretes.Applications;
 
@@ -74,6 +67,6 @@ public class ApplicationManager : IApplicationService
         await _applicationRepository.UpdateAsync(item);
 
         UpdatedApplicationResponse response = _mapper.Map<UpdatedApplicationResponse>(item);
-        return new SuccessDataResult<UpdatedApplicationResponse>(response, "Application succesfully updated!");
+        return new SuccessDataResult<UpdatedApplicationResponse>(response, "Application updated successfully!");
     }
 }

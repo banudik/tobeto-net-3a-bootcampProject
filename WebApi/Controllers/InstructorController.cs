@@ -11,7 +11,7 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class InstructorController : ControllerBase
+public class InstructorController : BaseController
 {
     private readonly IInstructorService _instructorService;
 
@@ -20,33 +20,33 @@ public class InstructorController : ControllerBase
         _instructorService = instructorService;
     }
 
-    [HttpPost]
-    public async Task<CreatedInstructorResponse> AddAsync(CreateInstructorRequest request)
+    [HttpPost("AddAsync")]
+    public async Task<IActionResult> AddAsync(CreateInstructorRequest request)
     {
-        return await _instructorService.AddAsync(request);
+        return Ok(await _instructorService.AddAsync(request));
     }
 
-    [HttpDelete]
-    public async Task<DeletedInstructorResponse> DeletedAsync(DeleteInstructorRequest request)
-    {
-        return await _instructorService.DeleteAsync(request);
-    }
-
-    [HttpPut]
-    public async Task<UpdatedInstructorResponse> UpdateAsync(UpdateInstructorRequest request)
-    {
-        return await _instructorService.UpdateAsync(request);
-    }
-
-    [HttpGet]
+    [HttpGet("GetAllAsync")]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _instructorService.GetAllAsync());
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute]int id)
+    [HttpGet("GetByIdAsync")]
+    public async Task<IActionResult> GetByIdAsync(int id)
     {
         return Ok(await _instructorService.GetByIdAsync(id));
+    }
+
+    [HttpDelete("DeleteAsync")]
+    public async Task<IActionResult> DeletedAsync(DeleteInstructorRequest request)
+    {
+        return Ok(await _instructorService.DeleteAsync(request));
+    }
+
+    [HttpPut("UpdateAsync")]
+    public async Task<IActionResult> UpdateAsync(UpdateInstructorRequest request)
+    {
+        return Ok(await _instructorService.UpdateAsync(request));
     }
 }

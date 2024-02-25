@@ -11,7 +11,7 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserController : ControllerBase
+public class UserController : BaseController
 {
     private readonly IUserService _userService;
 
@@ -20,33 +20,33 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [HttpPost]
-    public async Task<CreatedUserResponse> AddAsync(CreateUserRequest request)
+    [HttpPost("AddAsync")]
+    public async Task<IActionResult> AddAsync(CreateUserRequest request)
     {
-        return await _userService.AddAsync(request);
+        return Ok(await _userService.AddAsync(request));
     }
 
-    [HttpDelete]
-    public async Task<DeletedUserResponse> DeletedAsync(DeleteUserRequest request)
-    {
-        return await _userService.DeleteAsync(request);
-    }
-
-    [HttpPut]
-    public async Task<UpdatedUserResponse> UpdateAsync(UpdateUserRequest request)
-    {
-        return await _userService.UpdateAsync(request);
-    }
-
-    [HttpGet]
+    [HttpGet("GetAllAsync")]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _userService.GetAllAsync());
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
+    [HttpGet("GetByIdAsync")]
+    public async Task<IActionResult> GetByIdAsync(int id)
     {
         return Ok(await _userService.GetByIdAsync(id));
+    }
+
+    [HttpDelete("DeleteAsync")]
+    public async Task<IActionResult> DeletedAsync(DeleteUserRequest request)
+    {
+        return Ok(await _userService.DeleteAsync(request));
+    }
+
+    [HttpPut("UpdateAsync")]
+    public async Task<IActionResult> UpdateAsync(UpdateUserRequest request)
+    {
+        return Ok(await _userService.UpdateAsync(request));
     }
 }
