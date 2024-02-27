@@ -1,6 +1,7 @@
 ﻿using Business.Abstracts;
 using Business.Abstracts.Applications;
 using Business.Abstracts.ApplicationStates;
+using Business.Abstracts.Blacklists;
 using Business.Abstracts.Bootcamps;
 using Business.Abstracts.BootcampStates;
 using Business.Abstracts.Employee;
@@ -9,6 +10,7 @@ using Business.Abstracts.User;
 using Business.Concretes;
 using Business.Concretes.Applications;
 using Business.Concretes.ApplicationStates;
+using Business.Concretes.Blacklists;
 using Business.Concretes.Bootcamps;
 using Business.Concretes.BootcampStates;
 using Entities.Concretes;
@@ -32,6 +34,7 @@ public static class BusinessServiceRegistration
         services.AddScoped<IApplicationStateService, ApplicationStateManager>();
         services.AddScoped<IBootcampService, BootcampManager>();
         services.AddScoped<IBootcampStateService, BootcampStateManager>();
+        services.AddScoped<IBlacklistService, BlacklistManager>();
         return services;
 
     }

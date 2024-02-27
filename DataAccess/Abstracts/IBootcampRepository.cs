@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Abstracts;
 
-public interface IBootcampRepository:IAsyncRepository<Bootcamp,int>
+public interface IBootcampRepository: IAsyncRepository<Bootcamp, int>, IRepository<Bootcamp, int>
 {
 }

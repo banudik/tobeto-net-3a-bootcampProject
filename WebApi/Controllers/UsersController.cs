@@ -11,11 +11,11 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserController : BaseController
+public class UsersController : BaseController
 {
     private readonly IUserService _userService;
 
-    public UserController(IUserService userService)
+    public UsersController(IUserService userService)
     {
         _userService = userService;
     }

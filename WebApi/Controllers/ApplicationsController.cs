@@ -8,11 +8,11 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ApplicationController : BaseController
+public class ApplicationsController : BaseController
 {
     private readonly IApplicationService _applicationService;
 
-    public ApplicationController(IApplicationService applicationService)
+    public ApplicationsController(IApplicationService applicationService)
     {
         _applicationService = applicationService;
     }

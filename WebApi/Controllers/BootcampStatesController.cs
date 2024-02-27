@@ -9,11 +9,11 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BootcampStateController : BaseController
+public class BootcampStatesController : BaseController
 {
     private readonly IBootcampStateService _bootcampStateService;
 
-    public BootcampStateController(IBootcampStateService bootcampStateService)
+    public BootcampStatesController(IBootcampStateService bootcampStateService)
     {
         _bootcampStateService = bootcampStateService;
     }

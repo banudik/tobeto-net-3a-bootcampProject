@@ -21,6 +21,7 @@ public static class DataAccessServiceRegisration
         services.AddScoped<IApplicationStateRepository, ApplicationStateRepository>();
         services.AddScoped<IBootcampRepository, BootcampRepository>();
         services.AddScoped<IBootcampStateRepository, BootcampStateRepository>();
+        services.AddScoped<IBlacklistRepository, BlacklistRepository>();
 
 
         return services;

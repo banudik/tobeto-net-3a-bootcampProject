@@ -11,11 +11,11 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class EmployeeController : BaseController
+public class EmployeesController : BaseController
 {
     private readonly IEmployeeService _employeeService;
 
-    public EmployeeController(IEmployeeService employeeService)
+    public EmployeesController(IEmployeeService employeeService)
     {
         _employeeService = employeeService;
     }

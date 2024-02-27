@@ -17,5 +17,6 @@ public class ApplicantConfiguration :IEntityTypeConfiguration<Applicant>
         builder.Property(x => x.About).HasColumnName("About");
 
         builder.HasMany(p => p.Applications);
+        builder.HasOne(p => p.Blacklist);
     }
 }
