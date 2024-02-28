@@ -17,4 +17,12 @@ public class Bootcamp: BaseEntity<int>
     public virtual Instructor? Instructor { get; set; }
     public virtual ICollection<Application> Applications { get; set; }
     public virtual BootcampState BootcampState { get; set; }
+    public virtual ICollection<BootcampImage> BootcampImages { get; set; }
+
+    public Bootcamp()
+    {
+        BootcampImages = new HashSet<BootcampImage>();
+        Applications = new HashSet<Application>();
+    }
+
 }

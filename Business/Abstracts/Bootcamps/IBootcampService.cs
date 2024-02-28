@@ -8,7 +8,7 @@ public interface IBootcampService
 {
      Task<IDataResult<CreatedBootcampResponse>> AddAsync(CreateBootcampRequest request);
     Task<IDataResult<UpdatedBootcampResponse>> UpdateAsync(UpdateBootcampRequest request);
-    Task<IDataResult<DeletedBootcampResponse>> DeleteAsync(DeleteBootcampRequest request);
+    Task<IResult> DeleteAsync(DeleteBootcampRequest request);
     Task<IDataResult<List<GetAllBootcampResponse>>> GetAllAsync();
     Task<IDataResult<GetByIdBootcampResponse>> GetByIdAsync(int id);
 }

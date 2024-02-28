@@ -8,7 +8,7 @@ public interface IEmployeeService
 {
     Task<IDataResult<CreatedEmployeeResponse>> AddAsync(CreateEmployeeRequest request);
     Task<IDataResult<UpdatedEmployeeResponse>> UpdateAsync(UpdateEmployeeRequest request);
-    Task<IDataResult<DeletedEmployeeResponse>> DeleteAsync(DeleteEmployeeRequest request);
+    Task<IResult> DeleteAsync(DeleteEmployeeRequest request);
     Task<IDataResult<List<GetAllEmployeeResponse>>> GetAllAsync();
     Task<IDataResult<GetByIdEmployeeResponse>> GetByIdAsync(int id);
 }

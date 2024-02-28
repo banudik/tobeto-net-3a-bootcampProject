@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Business.Abstracts.User;
 using Business.Requests.Instructor;
 using Business.Requests.User;
 using Business.Responses.Instructor;
 using Business.Responses.User;
+using Core.Exceptions.Types;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using DataAccess.Concretes.Repositories;
@@ -34,12 +36,13 @@ public class UserManager : IUserService
         return new SuccessDataResult<CreatedUserResponse>(response, "Added Successfully");
     }
 
-    public async Task<IDataResult<DeletedUserResponse>> DeleteAsync(DeleteUserRequest request)
+    public async Task<IResult> DeleteAsync(DeleteUserRequest request)
     {
-        User user = _mapper.Map<User>(request);
-        await _userRepository.DeleteAsync(user);
-        DeletedUserResponse response = _mapper.Map<DeletedUserResponse>(user);
-        return new SuccessDataResult<DeletedUserResponse>(response, "Deleted Successfully");
+        await CheckIdIfNotExist(request.Id);
+        var item = await _userRepository.GetAsync(x=> x.Id == request.Id);
+        await _userRepository.DeleteAsync(item);
+        
+        return new SuccessResult("Deleted Successfully");
     }
 
     public async Task<IDataResult<List<GetAllUserResponse>>> GetAllAsync()
@@ -51,6 +54,8 @@ public class UserManager : IUserService
 
     public async Task<IDataResult<GetByIdUserResponse>> GetByIdAsync(int id)
     {
+        await CheckIdIfNotExist(id);
+
         var item = await _userRepository.GetAsync(x => x.Id == id);
 
         GetByIdUserResponse response = _mapper.Map<GetByIdUserResponse>(item);
@@ -75,5 +80,14 @@ public class UserManager : IUserService
 
         UpdatedUserResponse response = _mapper.Map<UpdatedUserResponse>(item);
         return new SuccessDataResult<UpdatedUserResponse>(response, "User updated successfully!");
+    }
+
+    public async Task CheckIdIfNotExist(int id)
+    {
+        var item = await _userRepository.GetAsync(x => x.Id == id);
+        if (item == null)
+        {
+            throw new NotFoundException("ID could not be found.");
+        }
     }
 }

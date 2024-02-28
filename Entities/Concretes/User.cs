@@ -9,7 +9,6 @@ namespace Entities.Concretes;
 
 public class User:BaseEntity<int>
 {
-
     public string UserName { get; set;}
     public string FirstName { get; set;}
     public string LastName { get; set;}

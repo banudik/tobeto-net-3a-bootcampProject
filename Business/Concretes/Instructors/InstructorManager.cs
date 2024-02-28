@@ -4,6 +4,8 @@ using Business.Requests.Employee;
 using Business.Requests.Instructor;
 using Business.Responses.Employee;
 using Business.Responses.Instructor;
+using Core.Exceptions.Types;
+using Core.Utilities.Helpers;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using DataAccess.Concretes.Repositories;
@@ -23,18 +25,22 @@ public class InstructorManager : IInstructorService
 
     public async Task<IDataResult<CreatedInstructorResponse>> AddAsync(CreateInstructorRequest request)
     {
+        await CheckUserNameIfExist(request.UserName, null);
+
         Instructor instructor = _mapper.Map<Instructor>(request);
         await _instructorRepository.AddAsync(instructor);
         CreatedInstructorResponse response = _mapper.Map<CreatedInstructorResponse>(instructor);
         return new SuccessDataResult<CreatedInstructorResponse>(response, "Added Successfully");
     }
 
-    public async Task<IDataResult<DeletedInstructorResponse>> DeleteAsync(DeleteInstructorRequest request)
+    public async Task<IResult> DeleteAsync(DeleteInstructorRequest request)
     {
-        Instructor instructor = _mapper.Map<Instructor>(request);
-        await _instructorRepository.DeleteAsync(instructor);
-        DeletedInstructorResponse response = _mapper.Map<DeletedInstructorResponse>(instructor);
-        return new SuccessDataResult<DeletedInstructorResponse>(response, "Deleted Successfully");
+        await CheckIdIfNotExist(request.Id);
+
+        var item = await _instructorRepository.GetAsync(x => x.Id == request.Id);
+        await _instructorRepository.DeleteAsync(item);
+        
+        return new SuccessResult("Deleted Successfully");
     }
 
     public async Task<IDataResult<List<GetAllInstructorResponse>>> GetAllAsync()
@@ -46,6 +52,8 @@ public class InstructorManager : IInstructorService
 
     public async Task<IDataResult<GetByIdInstructorResponse>> GetByIdAsync(int id)
     {
+        await CheckIdIfNotExist(id);
+
         var item = await _instructorRepository.GetAsync(x => x.Id == id);
 
         GetByIdInstructorResponse response = _mapper.Map<GetByIdInstructorResponse>(item);
@@ -59,16 +67,34 @@ public class InstructorManager : IInstructorService
 
     public async Task<IDataResult<UpdatedInstructorResponse>> UpdateAsync(UpdateInstructorRequest request)
     {
+        await CheckIdIfNotExist(request.Id);
+        await CheckUserNameIfExist(request.UserName, request.Id);
+
         var item = await _instructorRepository.GetAsync(p => p.Id == request.Id);
-        if (request.Id == 0 || item == null)
-        {
-            return new ErrorDataResult<UpdatedInstructorResponse>("Instructor could not be found.");
-        }
 
         _mapper.Map(request, item);
         await _instructorRepository.UpdateAsync(item);
 
         UpdatedInstructorResponse response = _mapper.Map<UpdatedInstructorResponse>(item);
         return new SuccessDataResult<UpdatedInstructorResponse>(response, "Instructor updated successfully!");
+    }
+
+    public async Task CheckUserNameIfExist(string userName, int? id)
+    {
+
+        var item = await _instructorRepository.GetAsync(x => x.UserName == SeoHelper.ToSeoUrl(userName) && x.Id != id);
+        if (item != null)
+        {
+            throw new BusinessException("Username already exist");
+        }
+    }
+
+    public async Task CheckIdIfNotExist(int id)
+    {
+        var item = await _instructorRepository.GetAsync(x => x.Id == id);
+        if (item == null)
+        {
+            throw new NotFoundException("ID could not be found.");
+        }
     }
 }

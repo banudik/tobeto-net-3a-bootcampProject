@@ -5,8 +5,10 @@ using Business.Requests.Bootcamps;
 using Business.Requests.BootcampStates;
 using Business.Responses.Bootcamps;
 using Business.Responses.BootcampStates;
+using Core.Exceptions.Types;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
+using DataAccess.Concretes.Repositories;
 using Entities.Concretes;
 using System;
 using System.Collections.Generic;
@@ -35,12 +37,14 @@ public class BootcampStateManager:IBootcampStateService
         return new SuccessDataResult<CreatedBootcampStateResponse>(response, "Added Successfully");
     }
 
-    public async Task<IDataResult<DeletedBootcampStateResponse>> DeleteAsync(DeleteBootcampStateRequest request)
+    public async Task<IResult> DeleteAsync(DeleteBootcampStateRequest request)
     {
-        BootcampState bootcampState = _mapper.Map<BootcampState>(request);
-        await _bootcampStateRepository.DeleteAsync(bootcampState);
-        DeletedBootcampStateResponse response = _mapper.Map<DeletedBootcampStateResponse>(bootcampState);
-        return new SuccessDataResult<DeletedBootcampStateResponse>(response, "Deleted Successfully");
+        await CheckIdIfNotExist(request.Id);
+
+        var item = await _bootcampStateRepository.GetAsync(x=>x.Id == request.Id);
+        await _bootcampStateRepository.DeleteAsync(item);
+       
+        return new SuccessResult("Deleted Successfully");
     }
 
     public async Task<IDataResult<List<GetAllBootcampStateResponse>>> GetAllAsync()
@@ -77,4 +81,13 @@ public class BootcampStateManager:IBootcampStateService
         UpdatedBootcampStateResponse response = _mapper.Map<UpdatedBootcampStateResponse>(item);
         return new SuccessDataResult<UpdatedBootcampStateResponse>(response, "BootcampState succesfully updated!");
     }
+    public async Task CheckIdIfNotExist(int id)
+    {
+        var item = await _bootcampStateRepository.GetAsync(x => x.Id == id);
+        if (item == null)
+        {
+            throw new NotFoundException("ID could not be found.");
+        }
+    }
+
 }

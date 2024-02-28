@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using Business.Abstracts.Applications;
+using Business.Abstracts.Blacklists;
 using Business.Requests.Applications;
 using Business.Responses.Applications;
+using Core.Exceptions.Types;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
+using DataAccess.Concretes.Repositories;
 using Entities.Concretes;
 
 namespace Business.Concretes.Applications;
@@ -12,27 +15,32 @@ public class ApplicationManager : IApplicationService
 {
     private readonly IApplicationRepository _applicationRepository;
     private readonly IMapper _mapper;
+    private readonly IBlacklistService _blacklistService;
 
-    public ApplicationManager(IApplicationRepository applicationRepository, IMapper mapper)
+    public ApplicationManager(IApplicationRepository applicationRepository, IMapper mapper, IBlacklistService blacklistService)
     {
         _applicationRepository = applicationRepository;
         _mapper = mapper;
+        _blacklistService = blacklistService;
+
     }
 
     public async Task<IDataResult<CreatedApplicationResponse>> AddAsync(CreateApplicationRequest request)
     {
+        await CheckIfApplicantIsBlacklisted(request.ApplicantId);
+
         Application application = _mapper.Map<Application>(request);
         await _applicationRepository.AddAsync(application);
         CreatedApplicationResponse response = _mapper.Map<CreatedApplicationResponse>(application);
         return new SuccessDataResult<CreatedApplicationResponse>(response, "Added Successfully");
     }
 
-    public async Task<IDataResult<DeletedApplicationResponse>> DeleteAsync(DeleteApplicationRequest request)
+    public async Task<IResult> DeleteAsync(DeleteApplicationRequest request)
     {
-        Application application = _mapper.Map<Application>(request);
-        await _applicationRepository.DeleteAsync(application);
-        DeletedApplicationResponse response = _mapper.Map<DeletedApplicationResponse>(application);
-        return new SuccessDataResult<DeletedApplicationResponse>(response, "Deleted Successfully");
+        var item = await _applicationRepository.GetAsync(x=>x.Id == request.Id);
+        await _applicationRepository.DeleteAsync(item);
+        
+        return new SuccessResult("Deleted Successfully");
     }
 
     public async Task<IDataResult<List<GetAllApplicationResponse>>> GetAllAsync()
@@ -44,7 +52,7 @@ public class ApplicationManager : IApplicationService
 
     public async Task<IDataResult<GetByIdApplicationResponse>> GetByIdAsync(int id)
     {
-        var item = await _applicationRepository.GetAsync(x=> x.Id == id);
+        var item = await _applicationRepository.GetAsync(x => x.Id == id);
 
         GetByIdApplicationResponse response = _mapper.Map<GetByIdApplicationResponse>(item);
 
@@ -69,4 +77,14 @@ public class ApplicationManager : IApplicationService
         UpdatedApplicationResponse response = _mapper.Map<UpdatedApplicationResponse>(item);
         return new SuccessDataResult<UpdatedApplicationResponse>(response, "Application updated successfully!");
     }
+
+    public async Task CheckIfApplicantIsBlacklisted(int id)
+    {
+        var item = await _blacklistService.GetByApplicantIdAsync(id);            if (item.Data != null)
+        {
+            throw new BusinessException("Applicant is blacklisted");
+        }
+    }
+
+
 }
