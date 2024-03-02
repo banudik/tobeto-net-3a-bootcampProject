@@ -41,6 +41,7 @@ public static class BusinessServiceRegistration
         //services.AddScoped<IBlacklistService, BlacklistManager>();
 
         services.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).Where(x => x.ServiceType.Name.EndsWith("Manager"));
+
         return services;
 
     }

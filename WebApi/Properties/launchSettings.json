@@ -20,7 +20,7 @@
       }
     },
 
-    "profiles": {
+   
       "webAPI.Production": {
         "commandName": "Project",
         "dotnetRunMessages": true,
