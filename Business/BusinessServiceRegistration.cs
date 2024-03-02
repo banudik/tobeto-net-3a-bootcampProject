@@ -13,6 +13,8 @@ using Business.Concretes.ApplicationStates;
 using Business.Concretes.Blacklists;
 using Business.Concretes.Bootcamps;
 using Business.Concretes.BootcampStates;
+using Core.CrossCuttingConcerns.Rules;
+using Core.Extensions;
 using Entities.Concretes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,15 +28,19 @@ public static class BusinessServiceRegistration
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-        services.AddScoped<IUserService, UserManager>();
-        services.AddScoped<IInstructorService, InstructorManager>();
-        services.AddScoped<IApplicantService, ApplicantManager>();
-        services.AddScoped<IEmployeeService, EmployeeManager>();
-        services.AddScoped<IApplicationService, ApplicationManager>();
-        services.AddScoped<IApplicationStateService, ApplicationStateManager>();
-        services.AddScoped<IBootcampService, BootcampManager>();
-        services.AddScoped<IBootcampStateService, BootcampStateManager>();
-        services.AddScoped<IBlacklistService, BlacklistManager>();
+        services.AddSubClassesOfType(Assembly.GetExecutingAssembly(), typeof(BaseBusinessRules));
+
+        //services.AddScoped<IUserService, UserManager>();
+        //services.AddScoped<IInstructorService, InstructorManager>();
+        //services.AddScoped<IApplicantService, ApplicantManager>();
+        //services.AddScoped<IEmployeeService, EmployeeManager>();
+        //services.AddScoped<IApplicationService, ApplicationManager>();
+        //services.AddScoped<IApplicationStateService, ApplicationStateManager>();
+        //services.AddScoped<IBootcampService, BootcampManager>();
+        //services.AddScoped<IBootcampStateService, BootcampStateManager>();
+        //services.AddScoped<IBlacklistService, BlacklistManager>();
+
+        services.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).Where(x => x.ServiceType.Name.EndsWith("Manager"));
         return services;
 
     }

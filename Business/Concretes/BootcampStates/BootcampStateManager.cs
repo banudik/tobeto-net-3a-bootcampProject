@@ -1,32 +1,26 @@
 ﻿using AutoMapper;
-using Business.Abstracts.Bootcamps;
 using Business.Abstracts.BootcampStates;
-using Business.Requests.Bootcamps;
+using Business.Constants;
 using Business.Requests.BootcampStates;
-using Business.Responses.Bootcamps;
 using Business.Responses.BootcampStates;
-using Core.Exceptions.Types;
+using Business.Rules;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
-using DataAccess.Concretes.Repositories;
 using Entities.Concretes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concretes.BootcampStates;
 
-public class BootcampStateManager:IBootcampStateService
+public class BootcampStateManager : IBootcampStateService
 {
     private readonly IBootcampStateRepository _bootcampStateRepository;
     private readonly IMapper _mapper;
+    private readonly BootcampStateBusinessRules _rules;
 
-    public BootcampStateManager(IBootcampStateRepository bootcampStateRepository, IMapper mapper)
+    public BootcampStateManager(IBootcampStateRepository bootcampStateRepository, IMapper mapper, BootcampStateBusinessRules rules)
     {
         _bootcampStateRepository = bootcampStateRepository;
         _mapper = mapper;
+        _rules = rules;
     }
 
     public async Task<IDataResult<CreatedBootcampStateResponse>> AddAsync(CreateBootcampStateRequest request)
@@ -34,60 +28,53 @@ public class BootcampStateManager:IBootcampStateService
         BootcampState bootcampState = _mapper.Map<BootcampState>(request);
         await _bootcampStateRepository.AddAsync(bootcampState);
         CreatedBootcampStateResponse response = _mapper.Map<CreatedBootcampStateResponse>(bootcampState);
-        return new SuccessDataResult<CreatedBootcampStateResponse>(response, "Added Successfully");
+        return new SuccessDataResult<CreatedBootcampStateResponse>(response, BootcampStateMessages.BootcampStateAdded);
     }
 
     public async Task<IResult> DeleteAsync(DeleteBootcampStateRequest request)
     {
-        await CheckIdIfNotExist(request.Id);
+        await _rules.CheckIdIfNotExist(request.Id);
 
-        var item = await _bootcampStateRepository.GetAsync(x=>x.Id == request.Id);
+        var item = await _bootcampStateRepository.GetAsync(x => x.Id == request.Id);
         await _bootcampStateRepository.DeleteAsync(item);
-       
-        return new SuccessResult("Deleted Successfully");
+
+        return new SuccessResult(BootcampStateMessages.BootcampStateDeleted);
     }
 
     public async Task<IDataResult<List<GetAllBootcampStateResponse>>> GetAllAsync()
     {
         var list = await _bootcampStateRepository.GetAllAsync();
         List<GetAllBootcampStateResponse> response = _mapper.Map<List<GetAllBootcampStateResponse>>(list);
-        return new SuccessDataResult<List<GetAllBootcampStateResponse>>(response, "Listed Successfully");
+        return new SuccessDataResult<List<GetAllBootcampStateResponse>>(response, BootcampStateMessages.BootcampStateListed);
     }
 
     public async Task<IDataResult<GetByIdBootcampStateResponse>> GetByIdAsync(int id)
     {
+        await _rules.CheckIdIfNotExist(id);
+
         var item = await _bootcampStateRepository.GetAsync(x => x.Id == id);
 
         GetByIdBootcampStateResponse response = _mapper.Map<GetByIdBootcampStateResponse>(item);
 
-        if (item != null)
-        {
-            return new SuccessDataResult<GetByIdBootcampStateResponse>(response, "Found Succesfully.");
-        }
-        return new ErrorDataResult<GetByIdBootcampStateResponse>("BootcampState could not be found.");
+
+        return new SuccessDataResult<GetByIdBootcampStateResponse>(response, BootcampStateMessages.BootcampStateFound);
+
+
     }
 
     public async Task<IDataResult<UpdatedBootcampStateResponse>> UpdateAsync(UpdateBootcampStateRequest request)
     {
+        await _rules.CheckIdIfNotExist(request.Id);
+
         var item = await _bootcampStateRepository.GetAsync(p => p.Id == request.Id);
-        if (request.Id == 0 || item == null)
-        {
-            return new ErrorDataResult<UpdatedBootcampStateResponse>("BootcampState could not be found.");
-        }
+      
 
         _mapper.Map(request, item);
         await _bootcampStateRepository.UpdateAsync(item);
 
         UpdatedBootcampStateResponse response = _mapper.Map<UpdatedBootcampStateResponse>(item);
-        return new SuccessDataResult<UpdatedBootcampStateResponse>(response, "BootcampState succesfully updated!");
+        return new SuccessDataResult<UpdatedBootcampStateResponse>(response, BootcampStateMessages.BootcampStateUpdated);
     }
-    public async Task CheckIdIfNotExist(int id)
-    {
-        var item = await _bootcampStateRepository.GetAsync(x => x.Id == id);
-        if (item == null)
-        {
-            throw new NotFoundException("ID could not be found.");
-        }
-    }
+
 
 }
