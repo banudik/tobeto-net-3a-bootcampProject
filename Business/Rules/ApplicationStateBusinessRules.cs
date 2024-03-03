@@ -15,7 +15,7 @@ public class ApplicationStateBusinessRules: BaseBusinessRules
 {
     private readonly IApplicationStateRepository _applicationStateRepository;
 
-    public ApplicationStateBusinessRules(ApplicationStateRepository applicationStateRepository)
+    public ApplicationStateBusinessRules(IApplicationStateRepository applicationStateRepository)
     {
         _applicationStateRepository = applicationStateRepository;
     }
