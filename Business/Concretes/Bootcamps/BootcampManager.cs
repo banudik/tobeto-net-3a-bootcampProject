@@ -4,9 +4,12 @@ using Business.Constants;
 using Business.Requests.Bootcamps;
 using Business.Responses.Bootcamps;
 using Business.Rules;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Concretes.Bootcamps;
 
@@ -22,7 +25,7 @@ public class BootcampManager:IBootcampService
         _mapper = mapper;
         _rules = rules;
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<CreatedBootcampResponse>> AddAsync(CreateBootcampRequest request)
     {
         Bootcamp bootcamp = _mapper.Map<Bootcamp>(request);
@@ -30,7 +33,7 @@ public class BootcampManager:IBootcampService
         CreatedBootcampResponse response = _mapper.Map<CreatedBootcampResponse>(bootcamp);
         return new SuccessDataResult<CreatedBootcampResponse>(response, BootcampMessages.BootcampAdded);
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IResult> DeleteAsync(DeleteBootcampRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
@@ -43,7 +46,7 @@ public class BootcampManager:IBootcampService
 
     public async Task<IDataResult<List<GetAllBootcampResponse>>> GetAllAsync()
     {
-        var list = await _bootcampRepository.GetAllAsync();
+        var list = await _bootcampRepository.GetAllAsync(include: x => x.Include(y => y.Instructor).Include(y=>y.BootcampState));
         List<GetAllBootcampResponse> response = _mapper.Map<List<GetAllBootcampResponse>>(list);
         return new SuccessDataResult<List<GetAllBootcampResponse>>(response, BootcampMessages.BootcampListed);
     }
@@ -52,18 +55,18 @@ public class BootcampManager:IBootcampService
     {
         await _rules.CheckIdIfNotExist(id);
 
-        var item = await _bootcampRepository.GetAsync(x => x.Id == id);
+        var item = await _bootcampRepository.GetAsync(x => x.Id == id, include: x => x.Include(y => y.Instructor).Include(y => y.BootcampState));
 
         GetByIdBootcampResponse response = _mapper.Map<GetByIdBootcampResponse>(item);
 
             return new SuccessDataResult<GetByIdBootcampResponse>(response, BootcampMessages.BootcampFound);
        
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<UpdatedBootcampResponse>> UpdateAsync(UpdateBootcampRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
-        var item = await _bootcampRepository.GetAsync(p => p.Id == request.Id);
+        var item = await _bootcampRepository.GetAsync(p => p.Id == request.Id, include: x => x.Include(y => y.Instructor).Include(y => y.BootcampState));
         
 
         _mapper.Map(request, item);

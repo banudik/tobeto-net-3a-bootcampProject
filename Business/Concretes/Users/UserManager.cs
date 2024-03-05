@@ -4,6 +4,8 @@ using Business.Constants;
 using Business.Requests.User;
 using Business.Responses.User;
 using Business.Rules;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -21,7 +23,7 @@ public class UserManager : IUserService
         _mapper = mapper;
         _rules = rules;
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<CreatedUserResponse>> AddAsync(CreateUserRequest request)
     {
         User user = _mapper.Map<User>(request);
@@ -29,7 +31,7 @@ public class UserManager : IUserService
         CreatedUserResponse response = _mapper.Map<CreatedUserResponse>(user);
         return new SuccessDataResult<CreatedUserResponse>(response, UserMessages.UserAdded);
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IResult> DeleteAsync(DeleteUserRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
@@ -58,7 +60,7 @@ public class UserManager : IUserService
         return new SuccessDataResult<GetByIdUserResponse>(response, UserMessages.UserFound);
 
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<UpdatedUserResponse>> UpdateAsync(UpdateUserRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);

@@ -4,6 +4,8 @@ using Business.Constants;
 using Business.Requests.Employee;
 using Business.Responses.Employee;
 using Business.Rules;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -21,7 +23,7 @@ public class EmployeeManager : IEmployeeService
         _mapper = mapper;
         _rules = rules;
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<CreatedEmployeeResponse>> AddAsync(CreateEmployeeRequest request)
     {
         await _rules.CheckUserNameIfExist(request.UserName, null);
@@ -31,7 +33,7 @@ public class EmployeeManager : IEmployeeService
         CreatedEmployeeResponse response = _mapper.Map<CreatedEmployeeResponse>(employee);
         return new SuccessDataResult<CreatedEmployeeResponse>(response, EmployeeMessages.EmployeeAdded);
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IResult> DeleteAsync(DeleteEmployeeRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
@@ -61,7 +63,7 @@ public class EmployeeManager : IEmployeeService
        
         
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<UpdatedEmployeeResponse>> UpdateAsync(UpdateEmployeeRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);

@@ -7,6 +7,8 @@ using DataAccess.Abstracts;
 using Entities.Concretes;
 using Business.Rules;
 using Business.Constants;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 
 namespace Business.Concretes;
 
@@ -22,7 +24,7 @@ public class ApplicantManager : IApplicantService
         _mapper = mapper;
         _rules = rules;
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<CreatedApplicantResponse>> AddAsync(CreateApplicantRequest request)
     {
         await _rules.CheckUserNameIfExist(request.UserName, null);
@@ -32,7 +34,7 @@ public class ApplicantManager : IApplicantService
         CreatedApplicantResponse response = _mapper.Map<CreatedApplicantResponse>(applicant);
         return new SuccessDataResult<CreatedApplicantResponse>(response, ApplicantMessages.ApplicantAdded);
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IResult> DeleteAsync(DeleteApplicantRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
@@ -60,7 +62,7 @@ public class ApplicantManager : IApplicantService
         return new SuccessDataResult<GetByIdApplicantResponse>(response, ApplicantMessages.ApplicantFound);
 
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<UpdatedApplicantResponse>> UpdateAsync(UpdateApplicantRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);

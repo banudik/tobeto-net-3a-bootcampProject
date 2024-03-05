@@ -4,6 +4,8 @@ using Business.Constants;
 using Business.Requests.BootcampStates;
 using Business.Responses.BootcampStates;
 using Business.Rules;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -22,7 +24,7 @@ public class BootcampStateManager : IBootcampStateService
         _mapper = mapper;
         _rules = rules;
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<CreatedBootcampStateResponse>> AddAsync(CreateBootcampStateRequest request)
     {
         BootcampState bootcampState = _mapper.Map<BootcampState>(request);
@@ -30,7 +32,7 @@ public class BootcampStateManager : IBootcampStateService
         CreatedBootcampStateResponse response = _mapper.Map<CreatedBootcampStateResponse>(bootcampState);
         return new SuccessDataResult<CreatedBootcampStateResponse>(response, BootcampStateMessages.BootcampStateAdded);
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IResult> DeleteAsync(DeleteBootcampStateRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
@@ -61,7 +63,7 @@ public class BootcampStateManager : IBootcampStateService
 
 
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<UpdatedBootcampStateResponse>> UpdateAsync(UpdateBootcampStateRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);

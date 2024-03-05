@@ -4,6 +4,8 @@ using Business.Constants;
 using Business.Requests.ApplicationStates;
 using Business.Responses.ApplicationStates;
 using Business.Rules;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -23,7 +25,7 @@ public class ApplicationStateManager : IApplicationStateService
         _mapper = mapper;
         _rules = rules;
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<CreatedApplicationStateResponse>> AddAsync(CreateApplicationStateRequest request)
     {
         ApplicationState applicationState = _mapper.Map<ApplicationState>(request);
@@ -31,7 +33,7 @@ public class ApplicationStateManager : IApplicationStateService
         CreatedApplicationStateResponse response = _mapper.Map<CreatedApplicationStateResponse>(applicationState);
         return new SuccessDataResult<CreatedApplicationStateResponse>(response, ApplicationStateMessages.ApplicationStateAdded);
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IResult> DeleteAsync(DeleteApplicationStateRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
@@ -61,7 +63,7 @@ public class ApplicationStateManager : IApplicationStateService
 
 
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<UpdatedApplicationStateResponse>> UpdateAsync(UpdateApplicationStateRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);

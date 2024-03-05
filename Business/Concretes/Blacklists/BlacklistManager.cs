@@ -4,9 +4,12 @@ using Business.Constants;
 using Business.Requests.Blacklists;
 using Business.Responses.Blacklists;
 using Business.Rules;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Concretes.Blacklists;
 
@@ -23,7 +26,7 @@ public class BlacklistManager : IBlacklistService
         _rules = rules;
 
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<CreatedBlacklistResponse>> AddAsync(CreateBlacklistRequest request)
     {
         Blacklist blacklist = _mapper.Map<Blacklist>(request);
@@ -31,7 +34,7 @@ public class BlacklistManager : IBlacklistService
         CreatedBlacklistResponse response = _mapper.Map<CreatedBlacklistResponse>(blacklist);
         return new SuccessDataResult<CreatedBlacklistResponse>(response, BlacklistMessages.BlacklistAdded);
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IResult> DeleteAsync(DeleteBlacklistRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
@@ -44,7 +47,7 @@ public class BlacklistManager : IBlacklistService
 
     public async Task<IDataResult<List<GetAllBlacklistResponse>>> GetAllAsync()
     {
-        var list = await _blacklistRepository.GetAllAsync();
+        var list = await _blacklistRepository.GetAllAsync(include: x => x.Include(y => y.Applicant));
         List<GetAllBlacklistResponse> response = _mapper.Map<List<GetAllBlacklistResponse>>(list);
         return new SuccessDataResult<List<GetAllBlacklistResponse>>(response, BlacklistMessages.BlacklistListed);
     }
@@ -65,7 +68,7 @@ public class BlacklistManager : IBlacklistService
     {
         await _rules.CheckIdIfNotExist(id);
 
-        var item = await _blacklistRepository.GetAsync(x => x.Id == id);
+        var item = await _blacklistRepository.GetAsync(x => x.Id == id, include: x => x.Include(y => y.Applicant));
 
         GetByIdBlacklistResponse response = _mapper.Map<GetByIdBlacklistResponse>(item);
 
@@ -73,12 +76,12 @@ public class BlacklistManager : IBlacklistService
 
 
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<UpdatedBlacklistResponse>> UpdateAsync(UpdateBlacklistRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
 
-        var item = await _blacklistRepository.GetAsync(x => x.Id == request.Id);
+        var item = await _blacklistRepository.GetAsync(x => x.Id == request.Id, include: x => x.Include(y => y.Applicant));
         
         _mapper.Map(request, item);
         await _blacklistRepository.UpdateAsync(item);

@@ -4,6 +4,8 @@ using Business.Constants;
 using Business.Requests.Instructor;
 using Business.Responses.Instructor;
 using Business.Rules;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -22,7 +24,7 @@ public class InstructorManager : IInstructorService
         _mapper = mapper;
         _rules = rules;
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<CreatedInstructorResponse>> AddAsync(CreateInstructorRequest request)
     {
         await _rules.CheckUserNameIfExist(request.UserName, null);
@@ -32,7 +34,7 @@ public class InstructorManager : IInstructorService
         CreatedInstructorResponse response = _mapper.Map<CreatedInstructorResponse>(instructor);
         return new SuccessDataResult<CreatedInstructorResponse>(response, InstructorMessages.InstructorAdded);
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IResult> DeleteAsync(DeleteInstructorRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
@@ -63,7 +65,7 @@ public class InstructorManager : IInstructorService
 
 
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<UpdatedInstructorResponse>> UpdateAsync(UpdateInstructorRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);

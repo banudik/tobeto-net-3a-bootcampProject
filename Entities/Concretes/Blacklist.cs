@@ -15,6 +15,16 @@ public class Blacklist:BaseEntity<int>
 
     public Applicant Applicant { get; set; }
 
+    public Blacklist()
+    {
+        
+    }
 
-
+    public Blacklist(string reason, DateTime date, int applicantId, Applicant applicant)
+    {
+        Reason = reason;
+        Date = date;
+        ApplicantId = applicantId;
+        Applicant = applicant;
+    }
 }

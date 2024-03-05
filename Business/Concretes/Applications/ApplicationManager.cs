@@ -5,9 +5,12 @@ using Business.Constants;
 using Business.Requests.Applications;
 using Business.Responses.Applications;
 using Business.Rules;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
 using Entities.Concretes;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Concretes.Applications;
 
@@ -26,7 +29,7 @@ public class ApplicationManager : IApplicationService
         _rules = rules;
 
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<CreatedApplicationResponse>> AddAsync(CreateApplicationRequest request)
     {
         await _rules.CheckIfApplicantIsBlacklisted(request.ApplicantId);
@@ -36,7 +39,7 @@ public class ApplicationManager : IApplicationService
         CreatedApplicationResponse response = _mapper.Map<CreatedApplicationResponse>(application);
         return new SuccessDataResult<CreatedApplicationResponse>(response, ApplicationMessages.ApplicationAdded);
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IResult> DeleteAsync(DeleteApplicationRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
@@ -49,7 +52,7 @@ public class ApplicationManager : IApplicationService
 
     public async Task<IDataResult<List<GetAllApplicationResponse>>> GetAllAsync()
     {
-        var list = await _applicationRepository.GetAllAsync();
+        var list = await _applicationRepository.GetAllAsync(include:x=>x.Include(y=>y.Applicant).Include(y=>y.Bootcamp).Include(y=>y.ApplicationState));
         List<GetAllApplicationResponse> response = _mapper.Map<List<GetAllApplicationResponse>>(list);
         return new SuccessDataResult<List<GetAllApplicationResponse>>(response, ApplicationMessages.ApplicationListed);
     }
@@ -58,19 +61,19 @@ public class ApplicationManager : IApplicationService
     {
         await _rules.CheckIdIfNotExist(id);
 
-        var item = await _applicationRepository.GetAsync(x => x.Id == id);
+        var item = await _applicationRepository.GetAsync(x => x.Id == id,include:x => x.Include(y => y.Applicant).Include(y => y.Bootcamp).Include(y => y.ApplicationState));
 
         GetByIdApplicationResponse response = _mapper.Map<GetByIdApplicationResponse>(item);
         return new SuccessDataResult<GetByIdApplicationResponse>(response, ApplicationMessages.ApplicationFound);
 
 
     }
-
+    [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<UpdatedApplicationResponse>> UpdateAsync(UpdateApplicationRequest request)
     {
         await _rules.CheckIdIfNotExist(request.Id);
 
-        var item = await _applicationRepository.GetAsync(p => p.Id == request.Id);
+        var item = await _applicationRepository.GetAsync(x => x.Id == request.Id, include: x => x.Include(y => y.Applicant).Include(y => y.Bootcamp).Include(y => y.ApplicationState));
 
         _mapper.Map(request, item);
         await _applicationRepository.UpdateAsync(item);

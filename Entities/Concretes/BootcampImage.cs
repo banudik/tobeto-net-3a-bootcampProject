@@ -17,5 +17,12 @@ public class BootcampImage:BaseEntity<int>
     {
         
     }
+
+    public BootcampImage(int bootcampId, string ımagePath, Bootcamp bootcamp)
+    {
+        BootcampId = bootcampId;
+        ImagePath = ımagePath;
+        Bootcamp = bootcamp;
+    }
 }
 

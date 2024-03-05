@@ -25,4 +25,16 @@ public class Bootcamp: BaseEntity<int>
         Applications = new HashSet<Application>();
     }
 
+    public Bootcamp(string name, int ınstructorId, DateTime startDate, DateTime endDate, int bootcampStateId, Instructor? ınstructor, ICollection<Application> applications, BootcampState bootcampState, ICollection<BootcampImage> bootcampImages)
+    {
+        Name = name;
+        InstructorId = ınstructorId;
+        StartDate = startDate;
+        EndDate = endDate;
+        BootcampStateId = bootcampStateId;
+        Instructor = ınstructor;
+        Applications = applications;
+        BootcampState = bootcampState;
+        BootcampImages = bootcampImages;
+    }
 }

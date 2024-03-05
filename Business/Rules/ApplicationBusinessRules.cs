@@ -31,7 +31,7 @@ public class ApplicationBusinessRules: BaseBusinessRules
     {
         var item = await _blacklistService.GetByApplicantIdAsync(id); if (item.Data != null)
         {
-            throw new BusinessException(ApplicationMessages.ApplicantBlacklisted);
+            throw new BusinessException(ApplicationMessages.ApplicationBlacklisted);
         }
     }
 }
