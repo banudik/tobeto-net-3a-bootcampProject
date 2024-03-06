@@ -2,8 +2,10 @@
 using Core.CrossCuttingConcerns.Logging;
 using Core.CrossCuttingConcerns.Logging.Serilog;
 using Core.Utilities.Interceptors;
+using Core.Utilities.IoC;
 using Core.Utilities.Messages;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace Core.Aspects.Autofac.Logging;
