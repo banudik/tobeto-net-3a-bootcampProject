@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "WebAPI": {
+    "WebAPI.Development": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

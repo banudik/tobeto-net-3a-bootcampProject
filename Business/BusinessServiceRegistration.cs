@@ -1,22 +1,5 @@
-﻿using Business.Abstracts;
-using Business.Abstracts.Applications;
-using Business.Abstracts.ApplicationStates;
-using Business.Abstracts.Blacklists;
-using Business.Abstracts.Bootcamps;
-using Business.Abstracts.BootcampStates;
-using Business.Abstracts.Employee;
-using Business.Abstracts.Instructor;
-using Business.Abstracts.User;
-using Business.Concretes;
-using Business.Concretes.Applications;
-using Business.Concretes.ApplicationStates;
-using Business.Concretes.Blacklists;
-using Business.Concretes.Bootcamps;
-using Business.Concretes.BootcampStates;
-using Core.CrossCuttingConcerns.Rules;
+﻿using Core.CrossCuttingConcerns.Rules;
 using Core.Extensions;
-using Entities.Concretes;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 

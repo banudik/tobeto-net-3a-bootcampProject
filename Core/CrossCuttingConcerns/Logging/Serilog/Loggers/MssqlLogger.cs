@@ -1,29 +1,25 @@
 ﻿using Serilog.Sinks.MSSqlServer;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Core.CrossCuttingConcerns.Logging.Serilog.ConfigurationModels;
+using Core.Utilities.IoC;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Core.Utilities.Messages;
 
 namespace Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 
 public class MssqlLogger:LoggerServiceBase
 {
-    //public MssqlLogger()
-    //{
-
-    //}
     public MssqlLogger()
     {
-        //MssqlConfiguration logConfiguration = configuration.GetSection("SerilogConfigurations:MssqlConfiguration")
-        //    .Get<MssqlConfiguration>() ?? throw new Exception("");
+        var configuration = ServiceTool.ServiceProvider.GetRequiredService<IConfiguration>();
+        var logConfig = configuration.GetSection("SerilogConfigurations:MssqlConfiguration").Get<MssqlConfiguration>() ?? throw new Exception(SerilogMessages.NullOptionsMessage);
         MSSqlServerSinkOptions sinkOptions = new()
-        { TableName = "Logs", AutoCreateSqlTable = true };
+        { TableName = logConfig.TableName, AutoCreateSqlTable = logConfig.AutoCreateSqlTable };
 
         ColumnOptions columnOptions = new();
         global::Serilog.Core.Logger serilogConfig = new LoggerConfiguration().WriteTo
-            .MSSqlServer("Server=(localdb)\\mssqllocaldb;Database=TobetoNet3ADb;Trusted_Connection=true", sinkOptions, columnOptions: columnOptions).CreateLogger();
+            .MSSqlServer(connectionString: logConfig.ConnectionString, sinkOptions: sinkOptions, columnOptions: columnOptions).CreateLogger();
         Logger = serilogConfig;
 
 
