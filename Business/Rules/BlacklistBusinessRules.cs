@@ -17,9 +17,18 @@ public class BlacklistBusinessRules : BaseBusinessRules
     public async Task CheckIdIfNotExist(int id)
     {
         var item = await _blacklistRepository.GetAsync(x => x.Id == id);
+        if (item == null)
+        {
+            throw new NotFoundException(BlacklistMessages.BlacklistIdCheck);
+        }
+    }
+    public async Task CheckIdIfExist(int id)
+    {
+        var item = await _blacklistRepository.GetAsync(x => x.Id == id);
         if (item != null)
         {
             throw new NotFoundException(BlacklistMessages.BlacklistIdCheck);
         }
     }
+
 }

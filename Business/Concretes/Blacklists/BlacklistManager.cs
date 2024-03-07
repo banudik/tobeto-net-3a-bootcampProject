@@ -54,7 +54,7 @@ public class BlacklistManager : IBlacklistService
 
     public async Task<IDataResult<GetByIdBlacklistResponse>> GetByApplicantIdAsync(int id)
     {
-        await _rules.CheckIdIfNotExist(id);
+        await _rules.CheckIdIfExist(id);
 
         var item = await _blacklistRepository.GetAsync(x => x.ApplicantId == id);
 
