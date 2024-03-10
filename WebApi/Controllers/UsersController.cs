@@ -1,5 +1,5 @@
 ﻿using Business.Abstracts.Instructor;
-using Business.Abstracts.User;
+using Business.Abstracts;
 using Business.Requests.Instructor;
 using Business.Requests.User;
 using Business.Responses.Instructor;

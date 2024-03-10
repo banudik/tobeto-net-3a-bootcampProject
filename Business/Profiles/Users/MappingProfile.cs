@@ -1,14 +1,7 @@
 ﻿using AutoMapper;
-using Business.Requests.Applications;
 using Business.Requests.User;
-using Business.Responses.Applications;
 using Business.Responses.User;
-using Entities.Concretes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Core.Utilities.Security.Entities;
 
 namespace Business.Profiles.Users;
 

@@ -18,5 +18,6 @@ public class ApplicantConfiguration :IEntityTypeConfiguration<Applicant>
 
         builder.HasMany(p => p.Applications);
         builder.HasOne(p => p.Blacklist);
+        //builder.HasOne(p => p.UserOperationClaims);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Business.Abstracts.User;
+using Business.Abstracts;
 using Business.Constants;
 using Business.Requests.User;
 using Business.Responses.User;
@@ -7,6 +7,7 @@ using Business.Rules;
 using Core.Aspects.Autofac.Logging;
 using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Core.Utilities.Results;
+using Core.Utilities.Security.Entities;
 using DataAccess.Abstracts;
 using Entities.Concretes;
 
@@ -48,6 +49,11 @@ public class UserManager : IUserService
         return new SuccessDataResult<List<GetAllUserResponse>>(response, UserMessages.UserListed);
     }
 
+    public async Task<DataResult<User>> GetById(int id)
+    {
+        return new SuccessDataResult<User>(await _userRepository.GetAsync(x => x.Id == id));
+    }
+
     public async Task<IDataResult<GetByIdUserResponse>> GetByIdAsync(int id)
     {
         await _rules.CheckIdIfNotExist(id);
@@ -60,6 +66,12 @@ public class UserManager : IUserService
         return new SuccessDataResult<GetByIdUserResponse>(response, UserMessages.UserFound);
 
     }
+
+    public async Task<DataResult<User>> GetByMail(string email)
+    {
+        return new SuccessDataResult<User>(await _userRepository.GetAsync(x => x.Email == email));
+    }
+
     [LogAspect(typeof(MongoDbLogger))]
     public async Task<IDataResult<UpdatedUserResponse>> UpdateAsync(UpdateUserRequest request)
     {
